@@ -1,0 +1,38 @@
+-- # Write your MySQL query statement below
+with q1 as 
+(select 
+    case 
+        when income < 20000 then "Low Salary"
+        when income <= 50000 then "Average Salary"
+        else "High Salary"
+    end as category
+from accounts),
+q2 as (
+    select 
+        q1.category, 
+        count(q1.category) as accounts_count 
+    from q1 
+    group by q1.category
+),
+q3 as (
+values row("Low Salary"), row("Average Salary"), row("High Salary")
+)
+select q3.column_0 as category, coalesce(q2.accounts_count,0) as accounts_count from q3
+left join q2
+on q3.column_0 = q2.category
+
+-- SELECT "Low Salary" AS category,
+--        sum(income < 20000) AS accounts_count
+--   FROM Accounts
+
+-- UNION
+
+-- SELECT "Average Salary" AS category,
+--        sum(income BETWEEN 20000 AND 50000) AS accounts_count
+--   FROM Accounts
+
+-- UNION
+
+-- SELECT "High Salary" AS category,
+--        sum(income > 50000) AS accounts_count
+--   FROM Accounts;
