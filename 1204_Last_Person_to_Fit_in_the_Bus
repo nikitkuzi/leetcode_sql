@@ -1,0 +1,48 @@
+-- with q1 as (
+--     select q.turn, @pref:=@pref-weight as p 
+--     from queue as q, (select @pref:=1000) as test
+--     order by turn
+-- ),
+with q1 as (
+    select q.turn, sum(weight) over(order by turn) as p 
+    from queue as q
+    order by turn
+),
+q2 as(
+    select person_name, q1.turn from queue as q
+    right join q1 on q.turn = q1.turn
+    -- where q1.p >= 0
+    where q1.p <= 1000
+)
+select q.person_name
+from queue as q
+right join q2 on q.turn =q2.turn
+where q.turn = (select max(turn) from q2)
+
+-- SELECT person_name FROM
+-- (
+-- SELECT person_name, SUM(weight) OVER(ORDER BY turn) Total
+-- FROM Queue) T
+-- WHERE Total <= 1000
+-- ORDER BY Total DESC
+-- LIMIT 1
+
+-- with total_weights as (
+--     select
+--         turn,
+--         person_id,
+--         person_name,
+--         weight,
+--         sum(weight) over (order by turn) as total_weight
+--     from
+--         queue
+--     order by
+--         turn
+-- )
+-- select
+--     person_name
+-- from
+--     total_weights
+-- where
+--     total_weight <= 1000
+--     and turn = (select max(turn) from total_weights where total_weight <=1000)
