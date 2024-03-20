@@ -1,0 +1,14 @@
+-- # Write your MySQL query statement below
+-- select distinct q1.num as ConsecutiveNums  from logs as q1
+-- join logs as q2 on q1.id = q2.id - 1
+-- join logs as q3 on q2.id = q3.id - 1
+-- where q1.num = q2.num and q1.num = q3.num
+  with cte as (SELECT
+        id,
+        num,
+        LEAD(num) OVER() AS "num1",
+        LEAD(num,2) OVER() AS "num2"
+    FROM
+        Logs)
+
+select distinct(num) as consecutiveNums from cte where num=num1 and num1=num2
