@@ -1,0 +1,65 @@
+WITH USER AS
+(SELECT name
+FROM Users U
+JOIN MovieRating R
+ON U.user_id = R.user_id
+GROUP BY U.user_id
+ORDER BY COUNT(U.user_id) DESC, name
+LIMIT 1),
+
+MOVIE AS 
+(SELECT title
+FROM Movies M
+JOIN MovieRating R
+ON M.movie_id = R.movie_id
+WHERE created_at >= '2020-02-01' AND created_at < '2020-03-01'
+GROUP BY R.movie_id
+ORDER BY AVG(rating) DESC, title
+LIMIT 1)
+
+SELECT name AS results FROM USER
+UNION ALL
+SELECT title AS results FROM MOVIE
+-- -- select user_id, count(*) as cnt from movierating 
+-- -- where user_id in (select max(count(*)) from movierating group by user_id)
+-- -- group by user_id
+-- with q1 as (
+--     select user_id, count(*) as cnt
+--     from movierating
+--     group by user_id
+-- ), mx as (
+--     select max(q1.cnt) as cnt from q1
+-- ), usrs as (
+--     select q1.user_id 
+--     from q1
+--     join mx
+--     where mx.cnt = q1.cnt
+-- ), res1 as (
+--     select u.name as name
+--     from users as u
+--     join usrs on u.user_id = usrs.user_id
+--     order by name
+--     limit 1
+-- ), rat as (
+--     select movie_id, avg(rating) as rating
+--     from movierating
+--     where created_at  BETWEEN "2020-02-01" AND "2020-02-29"
+--     group by movie_id
+-- ), mxr as (
+--     select max(rating) as rating from rat
+-- ), mov as (
+--     select rat.movie_id
+--     from rat
+--     join mxr
+--     where rat.rating = mxr.rating
+-- ), res2 as(
+--     select title as title
+--     from movies
+--     join mov as m on m.movie_id = movies.movie_id
+--     order by title
+--     limit 1
+-- ) select res1.name as results from res1
+-- union all
+-- select res2.title as results from res2
+
+
