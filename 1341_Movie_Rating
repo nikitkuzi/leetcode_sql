@@ -46,7 +46,7 @@ SELECT title AS results FROM MOVIE
 --     where created_at  BETWEEN "2020-02-01" AND "2020-02-29"
 --     group by movie_id
 -- ), mxr as (
---     select max(rating) as rating from rat
+--     select  max(rating) as rating from rat
 -- ), mov as (
 --     select rat.movie_id
 --     from rat
