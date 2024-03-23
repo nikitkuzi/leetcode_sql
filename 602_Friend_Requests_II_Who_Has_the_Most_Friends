@@ -1,0 +1,20 @@
+-- # Write your MySQL query statement below
+-- with q1 as (
+--     select requester_id, count(requester_id) from requestaccepted group by requester_id
+-- ), q2 as(
+--     select accepter_id, count(accepter_id) from requestaccepted group by accepter_id
+-- )
+-- select * from q2
+with total as (
+    select requester_id, accepter_id from requestaccepted
+    union all
+    select accepter_id, requester_id from requestaccepted
+), cnt as(
+    select requester_id as id, count(requester_id) as cnt from total group by requester_id
+), mx as (
+    select max(cnt) as mx from cnt
+) 
+select id, cnt as num from cnt
+join mx on mx.mx = cnt.cnt
+group by id 
+-- select * from total order by 1
