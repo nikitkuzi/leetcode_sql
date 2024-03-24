@@ -1,0 +1,18 @@
+# Write your MySQL query statement below
+with q1 as (
+    select 
+        salary, 
+        departmentid, 
+        id,
+        dense_rank() over(partition by departmentid order by salary desc) as rnk 
+    from employee
+), q2 as(
+    select distinct salary, departmentid, id from q1 where rnk < 4
+) 
+ select 
+    department.name as Department,
+    employee.name as Employee,
+    employee.salary as Salary
+    from employee
+    join q2 on employee.salary = q2.salary and employee.id = q2.id
+    join department on q2.departmentid = department.id
